@@ -5,11 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 
-import com.cashfree.lib.serializers.JsonFieldDeserializer;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Deserialize {
-  @SuppressWarnings("rawtypes")
-  Class<? extends JsonFieldDeserializer> using();
+  Class<?> using();
 }

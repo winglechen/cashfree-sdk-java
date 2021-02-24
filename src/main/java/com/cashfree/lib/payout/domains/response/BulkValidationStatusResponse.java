@@ -2,21 +2,18 @@ package com.cashfree.lib.payout.domains.response;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.math.BigDecimal;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
 
 import com.cashfree.lib.utils.CommonUtils;
-import com.cashfree.lib.http.ObjectReaderUtils;
 import com.cashfree.lib.annotations.Deserialize;
-import com.cashfree.lib.serializers.JsonFieldDeserializer;
 
 @Data
 @Accessors(chain = true)
@@ -58,7 +55,7 @@ public class BulkValidationStatusResponse extends CfPayoutsResponse {
     }
   }
 
-  public static final class CustomMapDeserializer implements JsonFieldDeserializer<Map<String, Payload.Entry>> {
+  public static final class CustomMapDeserializer {
     public CustomMapDeserializer() {}
 
     public Map<String, Payload.Entry> deserialize(String serializedString) {
@@ -66,12 +63,10 @@ public class BulkValidationStatusResponse extends CfPayoutsResponse {
         return null;
       }
 
-      JsonObject jsonObject = Json.parse(serializedString).asObject();
       Map<String, Payload.Entry> map = new HashMap<>();
-      Iterator<JsonObject.Member> it = jsonObject.iterator();
-      for (; it.hasNext();) {
-        JsonObject.Member member = it.next();
-        map.put(member.getName(), (Payload.Entry) ObjectReaderUtils.getFieldInstance(member.getValue(), Payload.Entry.class));
+      JSONObject json = JSON.parseObject(serializedString);
+      for (String key : json.keySet() ) {
+        map.put(key, json.getObject(key, Payload.Entry.class));
       }
 
       return map;

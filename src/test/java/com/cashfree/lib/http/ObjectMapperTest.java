@@ -1,7 +1,5 @@
 package com.cashfree.lib.http;
 
-import com.eclipsesource.json.Json;
-
 import com.cashfree.lib.payout.domains.response.AuthenticationResponse;
 
 public class ObjectMapperTest {
@@ -11,9 +9,6 @@ public class ObjectMapperTest {
 
   public void testObjectMapperWithInheritance() {
     String str = "{\"status\":\"SUCCESS\",\"subCode\":\"200\",\"message\":\"Token generated\",\"data\":{\"token\":\"IIII\",\"expiry\":1580902627}}";
-
-    // Doing this to unescape quotes.
-    str = Json.parse(str).toString();
 
     AuthenticationResponse authResponse = ObjectMapper.readValue(str, AuthenticationResponse.class);
     AuthenticationResponse expectedObj =

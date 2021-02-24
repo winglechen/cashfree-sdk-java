@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatterBuilder;
 
 import com.cashfree.lib.constants.Constants;
 
-public class CustomDateSerializer implements JsonFieldSerializer<LocalDateTime> {
+public class CustomDateSerializer {
   private final DateTimeFormatter dateTimeFormatter;
 
   private CustomDateSerializer(final String format) {
@@ -23,7 +23,6 @@ public class CustomDateSerializer implements JsonFieldSerializer<LocalDateTime> 
     this.dateTimeFormatter = Constants.dateTimeFormatter;
   }
 
-  @Override
   public String serialize(LocalDateTime value) {
     if (value == null) {
       return null;

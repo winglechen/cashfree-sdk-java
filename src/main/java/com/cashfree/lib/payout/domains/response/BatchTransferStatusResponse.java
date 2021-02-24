@@ -7,22 +7,17 @@ import java.time.temporal.ChronoField;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonValue;
 
 import com.cashfree.lib.utils.CommonUtils;
 import com.cashfree.lib.constants.Constants;
 import com.cashfree.lib.annotations.Serialize;
-import com.cashfree.lib.http.ObjectReaderUtils;
 import com.cashfree.lib.annotations.Deserialize;
-import com.cashfree.lib.serializers.JsonFieldSerializer;
-import com.cashfree.lib.serializers.JsonFieldDeserializer;
 
 @Data
 @Accessors(chain = true)
@@ -81,10 +76,9 @@ public class BatchTransferStatusResponse extends CfPayoutsResponse {
     }
   }
 
-  public static final class DateSerializer implements JsonFieldSerializer<LocalDateTime> {
+  public static final class DateSerializer  {
     public DateSerializer() {}
 
-    @Override
     public String serialize(LocalDateTime value) {
       if (value == null) {
         return null;
@@ -94,10 +88,9 @@ public class BatchTransferStatusResponse extends CfPayoutsResponse {
     }
   }
 
-  public static final class DateDeserializer implements JsonFieldDeserializer<LocalDateTime> {
+  public static final class DateDeserializer  {
     public DateDeserializer() {}
 
-    @Override
     public LocalDateTime deserialize(String dateAsString) {
       if (CommonUtils.isBlank(dateAsString) || Constants.PLACEHOLDER_DATESTRING.equals(dateAsString)) {
         return null;
@@ -107,23 +100,15 @@ public class BatchTransferStatusResponse extends CfPayoutsResponse {
     }
   }
 
-  public static final class ListDeserializer implements JsonFieldDeserializer<List<Payload.Transfer>> {
+  public static final class ListDeserializer  {
     public ListDeserializer() {}
 
-    @Override
     public List<Payload.Transfer> deserialize(String serializedString) {
       if (CommonUtils.isBlank(serializedString)) {
         return null;
       }
 
-      JsonArray jsonArray = Json.parse(serializedString).asArray();
-      List<Payload.Transfer> transfers = new ArrayList<>();
-      for (int i = 0; i < jsonArray.size(); ++i) {
-        JsonValue jsonValue = jsonArray.get(i);
-        transfers.add((Payload.Transfer) ObjectReaderUtils.getFieldInstance(jsonValue, Payload.Transfer.class));
-      }
-
-      return transfers;
+      return JSON.parseArray(serializedString, Payload.Transfer.class);
     }
   }
 }
